@@ -15,7 +15,6 @@ export async function generateStaticParams() {
     { cityName: 'chennai' },
     { cityName: 'pune' },
     { cityName: 'kolkata' },
-    { cityName: 'ahmedabad' },
-    
+    { cityName: 'ahmedabad' }
   ];
 }
