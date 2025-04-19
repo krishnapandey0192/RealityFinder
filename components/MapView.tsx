@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useProjects } from "@/lib/contexts/ProjectContext";
 import { Loader2 } from "lucide-react";
+import { Map } from "leaflet";
 
 // Dynamic import for Leaflet components
 import dynamic from "next/dynamic";
@@ -10,6 +11,7 @@ import dynamic from "next/dynamic";
 // Import Leaflet CSS
 import "leaflet/dist/leaflet.css";
 import { Project } from "@/lib/types";
+import { formatPrice } from "@/lib/utils";
 
 // Dynamically import Map components with no SSR
 const MapContainer = dynamic(
@@ -32,88 +34,46 @@ const Popup = dynamic(
   { ssr: false }
 );
 
-const MapView = () => {
-  const { projects, isLoading, selectedProject, setSelectedProject } = useProjects();
-  const mapRef = useRef<L.Map | null>(null);
-  
-  // Calculate center coordinates based on projects
-  const getCenterCoordinates = () => {
-    if (selectedProject) {
-      return [selectedProject.coordinates.lat, selectedProject.coordinates.lng];
-    }
-    
-    if (projects.length > 0) {
-      const latSum = projects.reduce((sum, p) => sum + p.coordinates.lat, 0);
-      const lngSum = projects.reduce((sum, p) => sum + p.coordinates.lng, 0);
-      return [latSum / projects.length, lngSum / projects.length];
-    }
-    
-    // Default to center of India if no projects
-    return [20.5937, 78.9629];
-  };
+const MapView: React.FC = () => {
+  const { projects, selectedProject, setSelectedProject } = useProjects();
+  const mapRef = useRef<Map | null>(null);
 
-  // Fix Leaflet icon issue
-  useEffect(() => {
-    // This code fixes the missing marker icon issue in Leaflet
-    const L = require("leaflet");
-    delete L.Icon.Default.prototype._getIconUrl;
-    
-    L.Icon.Default.mergeOptions({
-      iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
-      iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-      shadowUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png",
-    });
-  }, []);
-
-  // Center map on selected project
   useEffect(() => {
     if (mapRef.current && selectedProject) {
       mapRef.current.setView(
         [selectedProject.coordinates.lat, selectedProject.coordinates.lng],
-        14
+        15
       );
     }
   }, [selectedProject]);
 
-  if (isLoading) {
-    return (
-      <div className="bg-white rounded-lg shadow-sm border flex items-center justify-center h-full">
-        <div className="text-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-slate-600">Loading map data...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="bg-white rounded-lg shadow-sm border h-full overflow-hidden">
+    <div className="h-full w-full rounded-lg overflow-hidden">
       <MapContainer
-        center={getCenterCoordinates() as [number, number]}
+        center={[12.9716, 77.5946]}
         zoom={12}
         style={{ height: "100%", width: "100%" }}
-        whenCreated={(map) => (mapRef.current = map)}
+        ref={mapRef}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        
-        {projects.map((project: Project) => (
+        {projects.map((project) => (
           <Marker
             key={project.id}
             position={[project.coordinates.lat, project.coordinates.lng]}
             eventHandlers={{
-              click: () => {
-                setSelectedProject(project);
-              },
+              click: () => setSelectedProject(project),
             }}
           >
             <Popup>
-              <div className="p-1">
-                <h3 className="font-medium text-sm">{project.name}</h3>
-                <p className="text-xs text-slate-500">{project.location}</p>
-                <p className="text-xs font-medium mt-1">{project.priceRange}</p>
+              <div className="p-2">
+                <h3 className="font-semibold">{project.name}</h3>
+                <p className="text-sm text-gray-600">{project.location}</p>
+                <p className="text-sm font-medium text-blue-600">
+                  {formatPrice(project.price)}
+                </p>
               </div>
             </Popup>
           </Marker>
