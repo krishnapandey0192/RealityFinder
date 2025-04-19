@@ -66,12 +66,12 @@ const ProjectCard = ({ project, isSelected, onClick }: ProjectCardProps) => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {project.reraApproved && (
+            {/* {project.reraApproved && (
               <div className="flex items-center gap-1 bg-green-50 text-green-700 text-xs font-medium px-2.5 py-0.5 rounded-full">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 RERA Approved
               </div>
-            )}
+            )} */}
             <div className="bg-blue-50 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
               New
             </div>
