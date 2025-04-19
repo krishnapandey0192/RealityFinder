@@ -31,31 +31,37 @@ const getRandomStatus = (): "Ready to Move" | "Under Construction" | "New Launch
 };
 
 // Function to generate random amenities
-const getRandomAmenities = () => {
+const getRandomAmenities = (): string[] => {
   const allAmenities = [
     "Swimming Pool",
     "Gym",
     "Club House",
-    "Children's Play Area",
-    "24x7 Security",
+    "Park",
+    "Security",
     "Power Backup",
+    "Lift",
+    "Parking",
+    "Play Area",
     "Garden",
-    "Indoor Games",
-    "Jogging Track",
-    "Tennis Court",
-    "Basketball Court",
-    "Spa",
-    "Shopping Center"
+    "Rain Water Harvesting",
+    "Intercom",
+    "Fire Safety",
+    "Maintenance Staff",
+    "CCTV",
+    "Gas Pipeline",
+    "Water Storage",
+    "Sewage Treatment",
+    "Vaastu Compliant",
+    "Pet Friendly"
   ];
 
-  // Select 3-7 random amenities
-  const count = Math.floor(Math.random() * 5) + 3;
-  const amenities = [];
+  const numAmenities = Math.floor(Math.random() * 5) + 3; // Random number between 3 and 7
+  const amenities: string[] = [];
 
-  for (let i = 0; i < count; i++) {
-    const index = Math.floor(Math.random() * allAmenities.length);
-    if (!amenities.includes(allAmenities[index])) {
-      amenities.push(allAmenities[index]);
+  while (amenities.length < numAmenities) {
+    const randomAmenity = allAmenities[Math.floor(Math.random() * allAmenities.length)];
+    if (!amenities.includes(randomAmenity)) {
+      amenities.push(randomAmenity);
     }
   }
 
@@ -131,6 +137,8 @@ const generateMockProject = (city: string, index: number): Project => {
     imageUrl: `https://images.pexels.com/photos/${Math.floor(Math.random() * 1000)}/pexels-photo-${Math.floor(Math.random() * 1000)}.jpeg`,
     amenities: getRandomAmenities(),
     developer: builder,
+    builder: builder,
+    reraApproved: Math.random() > 0.3, // 70% chance of being RERA approved
     completionDate: '2024-12-31',
     units: [
       {

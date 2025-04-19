@@ -12,6 +12,8 @@ export interface Project {
   amenities?: string[];
   developer?: string;
   completionDate?: string;
+  reraApproved?: boolean;
+  builder?: string;
   units?: {
     type: string;
     size: string;
