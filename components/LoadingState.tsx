@@ -2,7 +2,6 @@
 
 import { useProjects } from "@/lib/contexts/ProjectContext";
 import { Loader2 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 
 interface LoadingStateProps {
   cityName: string;
@@ -19,12 +18,14 @@ const LoadingState = ({ cityName }: LoadingStateProps) => {
         <p className="text-slate-600 mb-6">
           We're fetching the latest real estate projects in {cityName}
         </p>
-        
-        <Progress 
-          value={loadingProgress} 
-          className="h-2 mb-2" 
-        />
-        
+
+        <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden mb-2">
+          <div
+            className="h-full bg-blue-600 transition-all duration-300 ease-in-out"
+            style={{ width: `${loadingProgress}%` }}
+          />
+        </div>
+
         <div className="flex justify-between text-sm text-slate-500">
           <span>{loadingProgress}% complete</span>
           <span>{loadingStatus}</span>
